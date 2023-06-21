@@ -28,6 +28,7 @@ import LoaderService from '../../services/loader';
 
 
 const BottomTab3 = () => {
+  const [token, setToken] = useState(localStorage.getItem('userToken') || null);
 
   const [openMsgList, setOpenMsgList] = useState([]);
   const [waitingMsgList, setWaitingMsgList] = useState([]);
@@ -37,19 +38,18 @@ const BottomTab3 = () => {
 
 
   useEffect(() => {
-    const userToken = getUserToken().then( (res) => {
-      console.log(res.token);
-      handleUserList_Open_Data(res.token);
-      handleUserList_Waiting_Data(res.token);
-    })
+      handleUserList_Open_Data();
+      handleUserList_Waiting_Data();
   }, []);
 
+
   
-  const handleUserList_Open_Data = (token) => {
+  const handleUserList_Open_Data = () => {
     setIsLoading(true);
+    console.log(token);
     getData('/message-open', token).then((res) => {
        console.log(res)
-       if(res.success){ 
+       if(res.status === 'success'){ 
         setIsLoading(false);
         setOpenMsgList(res.data);
        }else if(res.error){
@@ -62,11 +62,11 @@ const BottomTab3 = () => {
   };
 
 
-  const handleUserList_Waiting_Data = (token) => {
+  const handleUserList_Waiting_Data = () => {
     setIsLoading(true);
     getData('/message-waiting', token).then((res) => {
        console.log(res)
-       if(res.success){ 
+       if(res.status === 'success'){ 
         setIsLoading(false);
         setWaitingMsgList(res.data);
        }else if(res.error){
@@ -81,42 +81,41 @@ const BottomTab3 = () => {
 
 
 
-  const handle_Accept = (userid) => {
-      console.log(userid);
-
-      postData().then((res) => {
-        console.log(res)
-        if(res.success){ 
-          setTimeout( () => {
-            const setToken = setStore('userToken', res.success).then( (res) => {
-              console.log(res)
-              if(res === true){
-                window.location.href = '/';
-                setIsLoading(false);
-              }
-            });   
-          }, 1500);
-        }else if(res.error){
-          setIsLoading(false);
-          setError(res.error);
-        }
-      }).catch(error => {
-          setIsLoading(false);
-          if (error.response.status === 401) {
-            setError('Invalid username or password');
-          } else {
-            setError('An error occurred');
-          }
+  const handle_Accept = (userId) => {
+      console.log(userId);
+      setIsLoading(true);
+      postData('/accept-user', { id: userId }, '').then((res) => {
+       console.log(res)
+       if(res.status === 'success'){ 
+        setIsLoading(false);
+       
+       }else if(res.error){
+        setIsLoading(false);
+       }
+      })
+      .catch(error => {
+        setIsLoading(false);
       });
-
-      // https://smoochy.customerdevsites.com/api/accept-user/26
   };
   
 
 
 
-  const handle_Close = (userid) => {
-      console.log(userid);
+  const handle_Reject = (userId) => {
+      console.log(userId);
+      setIsLoading(true);
+      postData('/reject-user', { id: userId }, '').then((res) => {
+       console.log(res)
+       if(res.status === 'success'){ 
+        setIsLoading(false);
+       
+       }else if(res.error){
+        setIsLoading(false);
+       }
+      })
+      .catch(error => {
+        setIsLoading(false);
+      });
   };
   
 
@@ -160,8 +159,7 @@ const BottomTab3 = () => {
           <Tab>Waiting</Tab>
         </TabList>
     
-
-
+{/* {token} */}
 
         <br />
         <div style={{display: 'flex', align: 'center', justifyContent: 'center', margin: '20px 0px 20px'}}>
@@ -215,7 +213,7 @@ const BottomTab3 = () => {
                <h4>{user.name}</h4>
              </div>
              <div>
-               <button className="chat-button" onClick= {() => handle_Close(user.id)}>
+               <button className="chat-button" onClick= {() => handle_Reject(user.id)}>
                  <IoCloseSharp style={{color: '#ffffff', fontSize: 25}}></IoCloseSharp>
                </button>
              </div>

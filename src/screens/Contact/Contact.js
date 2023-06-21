@@ -9,35 +9,37 @@ import 'react-tabs/style/react-tabs.css';
 
 
 import { BiChevronRight } from "react-icons/bi";
-import { contact, getData, postFormData } from '../../services/authService';
+import { contact, getData } from '../../services/authService';
 import { setStore, getStore, getUserToken, removeStore, clearStore } from '../../services/storageService';
+
 import LoaderService from '../../services/loader';
 
-import { Accordion, AccordionItem } from '@szhsin/react-accordion';
+import {Accordion, AccordionItem, AccordionItemHeading, 
+  AccordionItemButton, AccordionItemPanel } from 'react-accessible-accordion';
+import styles from './Contact.css';
 
 
 const Contact = () => {
-
   const [faqsContent, setFAQsContent] = useState([]);
   const [expandedQuestion, setExpandedQuestion] = useState(faqsContent);
 
   const [isLoading, setIsLoading] = useState(false);
 
 
+  const [showContactForm, setShowContactForm] = useState(true);
+
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
-
+  const [errors, setErrors] = useState({});
 
 
 
 
   useEffect(() => {
-    const userToken = getUserToken().then( (res) => {
-      console.log(res.token);
       handleFAQs_Data();
-    })
   }, []);
 
 
@@ -66,42 +68,84 @@ const Contact = () => {
 
 
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'email') {
+      setEmail(value);
+    } else if (name === 'subject') {
+      setSubject(value);
+    } else if (name === 'message') {
+      setMessage(value);
+    }
+  };
+
+
+  const validateForm = () => {
+    let formIsValid = true;
+    const newErrors = {};
+
+    // Validate name
+    if (!name) {
+      formIsValid = false;
+      newErrors.name = 'Name is required';
+    }
+
+    // Validate email
+    if (!email) {
+      formIsValid = false;
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      formIsValid = false;
+      newErrors.email = 'Email is invalid';
+    }
+
+    // Validate subject
+    if (!subject) {
+      formIsValid = false;
+      newErrors.subject = 'Subject is required';
+    } 
+
+    // Validate message
+    if (!message) {
+      formIsValid = false;
+      newErrors.message = 'Message is required';
+    } 
+
+    setErrors(newErrors);
+    return formIsValid;
+  };
+
+
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const newErrors = {};
     console.log('Form submitted:', { name, email, subject, message });
-    const payload = { name, email, subject, message };
-    console.log(payload)
 
-
+    if (validateForm()) {
       setIsLoading(true);
       contact(name, email, subject, message).then((res) => {
         console.log(res)
         if(res.status === 'success'){ 
-          // setTimeout( () => {
-          //   const setToken = setStore('userToken', res.success).then( (res) => {
-          //     console.log(res)
-          //     if(res === true){
-          //       window.location.href = '/';
-          //       setIsLoading(false);
-          //     }
-          //   });   
-          // }, 1500);
+          setTimeout( () => {
+            setIsLoading(false); 
+            setShowContactForm(false);
+          }, 1500);
           setIsLoading(false);
         }else if(res.error){
           setIsLoading(false);
-          //  newErrors.server = res.error;
-          //  setErrors(newErrors);
+           newErrors.server = res.error;
+           setErrors(newErrors);
         }
       }).catch(error => {
           setIsLoading(false);
-          //  newErrors.server = error;
-          //  setErrors(newErrors);
+           newErrors.server = error;
+           setErrors(newErrors);
       });
     }
-
-
-
+  }
 
 
 
@@ -124,92 +168,83 @@ const Contact = () => {
 
 
         <TabPanel>
+
+          {showContactForm ? (
           <form onSubmit={handleFormSubmit}>
             <div style={{padding: 10}}>
-  
-              <div>
-                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 10}}>Name</p>
+              <div style={{marginBottom: 20}}>
+                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 6}}>Name</p>
                 <div className="input-outer-div">
                   <input type="text" className="left-input" style={{color: '#333'}}
-                   name="name" value={name} onChange={(e) => setName(e.target.value)} required/>
+                   name="name" value={name}  onChange={handleInputChange}/>
                 </div>
+                {errors.name && <p style={{color: '#ff0037', padding: '0px 25px', marginTop: 6, marginBottm: 0}}>{errors.name}</p>}
               </div>
-              <br />
+           
 
-              <div>
-                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 10}}>Subject</p>
+              <div style={{marginBottom: 20}}>
+                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 6}}>Subject</p>
                 <div className="input-outer-div">
                   <input type="text" className="left-input" style={{color: '#333'}}
-                  name="subject" value={subject} onChange={(e) => setSubject(e.target.value)} required/>
+                  name="subject" value={subject}  onChange={handleInputChange}/>
                 </div>
+                {errors.subject && <p style={{color: '#ff0037', padding: '0px 25px', marginTop: 6, marginBottm: 0}}>{errors.subject}</p>}
               </div>
-              <br />
+             
 
-              <div>
-                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 10}}>Email</p>
+              <div style={{marginBottom: 20}}>
+                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 6}}>Email</p>
                 <div className="input-outer-div">
                   <input type="email" className="left-input" style={{color: '#333'}}
-                  name="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                  name="email" value={email}  onChange={handleInputChange}/>
                 </div>
+                {errors.email && <p style={{color: '#ff0037', padding: '0px 25px', marginTop: 6, marginBottm: 0}}>{errors.email}</p>}
               </div>
-              <br />
+         
 
-              <div>
-                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 10}}>Message</p>
+              <div style={{marginBottom: 20}}>
+                <p style={{padding: '0px 25px', color: '#000', fontSize: 14, marginBottom: 6}}>Message</p>
                 <div className="input-outer-div">
                   <textarea id="message" rows="4" cols="50" className="left-input-textarea" style={{color: '#333'}}
-                  name="message" value={message} onChange={(e) => setMessage(e.target.value)} required/>
+                  name="message" value={message}  onChange={handleInputChange}/>
                 </div>
+                {errors.message && <p style={{color: '#ff0037', padding: '0px 25px', marginTop: 6, marginBottm: 0}}>{errors.message}</p>}
               </div>
-              <br />
-
-
-        
             </div>
 
             <div style={{margin: '10px 10px 20px'}}>
                 <button type="submit" className="button-A" style={{margin: 0}}>Submit</button>
             </div>
           </form>
+          ) : (
+          <div style={{padding: 25, height: 100, display: 'flex', alignItems: 'center'}}>
+            <h4>Thank you for contact us. we will contact you shortly.</h4>
+          </div>
+          )}
         </TabPanel>
 
 
         <TabPanel>
         <div>
-
-        {faqsContent.length > 0 ? (
-          <>         
-          {faqsContent.map((q, index) => (
-            <div key={q.id}>
-            <button onClick={() => toggleQuestion(index)}>
-              {q.name}
-            </button>
-            {expandedQuestion === index && <p>{q.detail}</p>}
-            </div>
-           ))}
-
-    <Accordion>
-      <AccordionItem header="What is Lorem Ipsum?">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-        do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </AccordionItem>
-
-      <AccordionItem header="Where does it come from?">
-        Quisque eget luctus mi, vehicula mollis lorem. Proin fringilla
-        vel erat quis sodales. Nam ex enim, eleifend venenatis lectus
-        vitae, accumsan auctor mi.
-      </AccordionItem>
-
-      <AccordionItem header="Why do we use it?">
-        Suspendisse massa risus, pretium id interdum in, dictum sit
-        amet ante. Fusce vulputate purus sed tempus feugiat.
-      </AccordionItem>
-    </Accordion>
-
-           </>
-        ) : (
-          <div className="no-data-msg">No FAQ's data found!</div>
-        )}
+          {faqsContent.length > 0 ? (
+            <Accordion allowZeroExpanded>
+            {faqsContent.map((q, index) => (
+              <AccordionItem>
+                  <AccordionItemHeading>
+                      <AccordionItemButton>{q.name}</AccordionItemButton>
+                  </AccordionItemHeading>
+                  <AccordionItemPanel>
+                    <div style={{paddingInline: 12}}>
+                    <p>{q.detail}</p>
+                    </div>
+                      
+                  </AccordionItemPanel>
+              </AccordionItem>
+            ))}
+            </Accordion>
+          ) : (
+            <div className="no-data-msg">No FAQ's data found!</div>
+          )}
         </div>
 
         </TabPanel>

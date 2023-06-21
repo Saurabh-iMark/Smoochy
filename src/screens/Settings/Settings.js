@@ -7,10 +7,22 @@ import BottomTabs from '../../components/BottomTabs';
 import { BiChevronRight } from "react-icons/bi";
 import { setStore, getStore, getUserToken, removeStore, clearStore } from '../../services/storageService';
 import LoaderService from '../../services/loader';
+import DeleteACModal from '../../components/DeleteAcModal/DeleteAcModal';
 
 
 const Settings = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalDeleteOpen, setModalDeleteOpen] = useState(false);
+
+  const handleOpenModalDelete = () => {
+    setModalDeleteOpen(true);
+  };
+
+  const handleCloseModalDelete = () => {
+    setModalDeleteOpen(false);
+  };
+
+
 
   function handleLogoutClick(){
     setIsLoading(true);
@@ -65,17 +77,16 @@ const Settings = () => {
       </Link>
 
 
-      <Link to="/photoVerification">
+      <Link to="/upgradeac">
       <button className="button-Z">Upgrade your account
         <BiChevronRight  style={{fontSize: 22}}></BiChevronRight>
       </button>
       </Link>
  
 
-
        <div style={{position: 'absolute', bottom: '4vh'}}>
         <button className="button-C"  onClick={handleLogoutClick}>Log out</button>
-        <button className="button-D">Delete account</button>
+        <button className="button-D"  onClick={handleOpenModalDelete}>Delete account</button>
       </div>
       </div>
       
@@ -83,7 +94,7 @@ const Settings = () => {
       </div>
       </main>
 
-
+      <DeleteACModal isOpen={isModalDeleteOpen} onClose={handleCloseModalDelete}></DeleteACModal>
       <BottomTabs></BottomTabs>
     
       {isLoading && <LoaderService />}

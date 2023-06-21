@@ -1,8 +1,11 @@
 
 const getUserToken = async () => {
   try {
-    let userToken = localStorage.getItem('userToken');
-        userToken = JSON.parse(userToken);
+    let usertoken = localStorage.getItem('userToken');
+        // usertoken = JSON.parse(usertoken);
+    
+    // console.log(usertoken);
+    // "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYjNlZDM2YTEzNjFjYTRmNjg1NDc2MTEyMDVhMjVhYTM2MGIzNDczY2IyNWQxNzg3OGRjMWI0OWJhZTYyYTdhZGI0MjNmNGIxNmM1MjEzNjYiLCJpYXQiOjE2ODcyMzc3NTIsIm5iZiI6MTY4NzIzNzc1MiwiZXhwIjoxNzE4ODYwMTUyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.KovtCTFslzjEdFr3WxBJy5ID5hLWXELnz2pqPJ4OqoTa2StJysbV_X8n_gQaIr8qU9_ouT1ru_ZaEzYiw1hHdk38aiJf5c45DCfQnL7sTSSPeuz02L7akvbTcedmR9Uj1VjdF_B49_hbpvcVAx7tSUEM4cyA2iLoSp2F_Z6iukaHQ-vBoWGyj9zktUL5U0_Z6Pib_jDm7kSbaQlkRO8DD_pMGypqL4VWuIU8rpBDuR-InfSL_3hyNUx4Eu9hJBqwlqQVN1Ic2YCL72euzr-ebAiBOZeFpCf6D2L_v95_xEB4Ktvs9AVGp9XN71E-CmD0u4gjV_bdGxFjalE9YuPzspQFfoCCy4QVRssSaD8MK9sy79EOg8ykKW4FpYEYiOAezFlKcemWTwJuKNLDCRdcrO_27U7J0cfi8Sfii7v5gqDxJskpeK-AsP1DNMeTq3MpIQKgdBqZtT1fkFT2tnOTBk8R_CO0PEzaT3dAcqjOxKQ2KSKWM9AO-fCWA1ZMKbHgZ28I7YQ75HltwJv-Pe2RcjTnOjFZRLDr0gxjd3E6gHQNMLeTq52cMIAJTEs2__HfUdj71_k8pVIlzhxOGEelRJNw_NNxiOTKfNMu-XN9bzjjwYd9xCmbge1XS4oisEvVGzjPP-0_GrDdy_DbFThrCTepai2I1xbHYMoy0kJRrtM"
 
     // console.log(JSON.parse(userToken));
     // {
@@ -11,7 +14,9 @@ const getUserToken = async () => {
 
     // console.log(JSON.stringfy(userToken));
     // {\"token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzJmNDRmYzkyM2YyNmU3YWE5Y2ZhYjg3ZmFiNmEwZmEyZGU4MDFjODQ0MzQzZjA0ZDZlMGEzZGZlYzkzZjM0ZDI1MDVhMzE1YTU4NDBhMWYiLCJpYXQiOjE2ODYyOTg4NTMsIm5iZiI6MTY4NjI5ODg1MywiZXhwIjoxNzE3OTIxMjUzLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.GNObwcuaXMTBrhFJk9i-sH0OyhLsDTJjEh9bmWuKxeARs_Ye3Bx86pfOYkI-wpf9Ut1yw_lP9rC2o8gV0Py9OrEwNCIb6PhSekh3AoePgvV1HUsJOxE8rwQ2PXu9uaHnnHT6J3janIyyQDsNr9IBV47_abSCKOr8IV1nH5r7oZqgEzi38mvnxQ8yuqawStVfGDHN_-nb8qtSc7gcDSvBEPXuuxj-VBak05TeqozwEcfDoW3zDWlgH5IaaeYiHFKa0I3RbcLWJdVI4JE9LFSuv22GZc6o3UmzNKOiP2i4j8t4T2pkq_VLuY-dQKxYU25OkcvH7mGhoSP9ouLPMM_fm-l98FxROYesPoA1hAVztOfRhdq_rNYjzTQ6oPup1EzehVlAjzuvH_baM8qkhOHJpD3pI9rpy0YRiMyMfSy4wVm8U57bpcn31xbHYWrfbWLJqDmmTr4RBQUuuTeof60M1jfZR8GOOyqLNZWCWPAc3YNhNpe5o1ub-jAn22INluwFM_L07lvUKTp4yVQe5WlUDr2tFqANGtEOtNlu6PDPKi8YOTLfahvYSeKpIiSa5wGfsbWx-PXGGOjjfhwoK9qFhXBCIgNJZ7bYbvjFYvrj8UrSY2acZb-MOh2GyyXlX4K8J8_MI6KRD_m1s0t7VKSrEvqeYBEDBfW6yTm4foej74M\"}"
-    return userToken;
+    
+    return usertoken;
+
   } catch (error) {
     return null;
     console.log('Error retrieving data:', error);
@@ -22,7 +27,8 @@ const getUserToken = async () => {
 
 const setStore = async (key, value) => {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    // localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, value);
     return true;
   } catch (error) {
     return false;
@@ -32,10 +38,11 @@ const setStore = async (key, value) => {
 
 
 
-const getStore = async (key, defaultValue = null) => {
+const getStore = async (key) => {
+  let defaultValue = null;
   try {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue;
+    return item ? item : defaultValue;
   } catch (error) {
     console.error('Error retrieving from local storage:', error);
     return defaultValue;

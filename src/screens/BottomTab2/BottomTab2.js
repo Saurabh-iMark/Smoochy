@@ -24,26 +24,25 @@ import LoaderService from '../../services/loader';
 
 
 const BottomTab2 = () => {
-
+  const [token, setToken] = useState(localStorage.getItem('userToken') || null);
+  const [introValue, setIntroValue] = useState(localStorage.getItem('introModal') || null);
 
   const [usersList, setUsersList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
-    const userToken = getUserToken().then( (res) => {
-      console.log(res.token);
-      handleUserList_Data(res.token);
-    })
+    console.log(introValue);
+    handleUserList_Data();
   }, []);
 
 
 
-  const handleUserList_Data = (token) => {
+  const handleUserList_Data = () => {
     setIsLoading(true);
-    getData('/user-list', token).then((res) => {
+      getData('/user-list', token).then((res) => {
        console.log(res)
-       if(res.success){ 
+       if(res.status === 'success'){ 
         setIsLoading(false);
         setUsersList(res.data)
        }else if(res.error){
@@ -165,7 +164,9 @@ const BottomTab2 = () => {
             <h4>{user.name}</h4>
           </div>
           <div> 
+            <Link to={`/profile/${user.id}`}>
             <IoEyeSharp style={{color: '#733faa', fontSize: 22}}></IoEyeSharp>
+            </Link>
           </div>
           <div>
             <Link to="/chatBetween">
@@ -186,7 +187,7 @@ const BottomTab2 = () => {
       </div>
     </main>
 
-    {/* <IntroModal></IntroModal> */}
+    <IntroModal></IntroModal>
     <BottomTabs></BottomTabs> 
     {isLoading && <LoaderService />}
 

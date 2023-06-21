@@ -36,11 +36,16 @@ import axios from 'axios';
   }
 
     
-  const register = (name, email, dob, gender, location, phone, creativity, why_here, image)  => {
-      return axios.post(API_URL + "/register", {name, email, dob, gender, location, phone, creativity, why_here, image}).then(response => {
-        console.log(response);
-        return response.data;
-      })
+  const register = async (payload)  => {
+      let nativeHeaders = {
+           'Content-Type': 'multipart/form-data', 
+           'Access-Control-Allow-Origin': '*',
+           'mode': 'no-cors'
+      };
+
+      const res = await fetch(API_URL + "/register", {method: 'POST', headers: nativeHeaders, body: JSON.stringify(payload)});
+      const finalRes = await res.json();
+      return finalRes;
   }
     
 
@@ -50,7 +55,7 @@ import axios from 'axios';
          'Access-Control-Allow-Origin': '*',
          'mode': 'no-cors'
     };
-
+    
     const res = await fetch(API_URL + "/contact", {method: 'POST', headers: nativeHeaders, body: JSON.stringify({ name, email, subject, message })});
     const finalRes = await res.json();
     return finalRes;
@@ -59,20 +64,28 @@ import axios from 'axios';
 
 
   const postData = async (route, payload, token) => {
-    let nativeHeaders = {
-         'Content-Type': 'application/json', 
-         'Access-Control-Allow-Origin': '*',
-         'mode': 'no-cors'
-    };
+    let nativeHeaders;
+    if(token === '') {
+        nativeHeaders = {
+           'Content-Type': 'application/json', 
+           'Access-Control-Allow-Origin': '*', 
+        };
+    }else {
+        nativeHeaders = {
+           'Content-Type': 'application/json', 
+           'Access-Control-Allow-Origin': '*',
+           'Authorization': `Bearer ${token}`
+        };
+    }
 
-    const res = await fetch(API_URL + route, {method: 'POST', headers: nativeHeaders, body: JSON.stringify({payload})});
+    const res = await fetch(API_URL + route, {method: 'POST', headers: nativeHeaders, body: JSON.stringify(payload)});
     const finalRes = await res.json();
     return finalRes;
   }
 
+
+
   const postFormData = async (route, payload, token) => {
-    console.log(route, payload, token);
-    console.log(payload);
     let nativeHeaders;
     if(token === '') {
         nativeHeaders = {
@@ -87,8 +100,12 @@ import axios from 'axios';
         };
     }
 
+    console.log(JSON.stringify(payload));
+    console.log(API_URL + route);
+    console.log(nativeHeaders);
+    console.log(payload);
 
-    const res = await fetch(API_URL + route, {method: 'POST', headers: nativeHeaders, body: payload});
+    const res = await fetch(API_URL + route, {method: 'POST', headers: nativeHeaders, body: JSON.stringify(payload)});
     console.log(res);
     const finalRes = await res.json();
     console.log(finalRes);
@@ -96,7 +113,7 @@ import axios from 'axios';
   }
 
 
-  const getData = async (route, token) => {
+  const getData = async (route, token: String) => {
     let nativeHeaders;
     if(token === '') {
         nativeHeaders = {
@@ -112,7 +129,7 @@ import axios from 'axios';
     }
 
     const res = await fetch(API_URL + route, {method: 'GET', headers: nativeHeaders});
-    console.log(res);
+    // console.log(res);
     const finalRes = await res.json();
     return finalRes;
   }

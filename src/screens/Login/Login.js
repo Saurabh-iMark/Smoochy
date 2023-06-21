@@ -31,6 +31,7 @@ const Login = () => {
     }
   };
 
+
   const validateForm = () => {
     let formIsValid = true;
     const newErrors = {};
@@ -66,10 +67,10 @@ const Login = () => {
       setIsLoading(true);
       login(email, password).then((res) => {
         console.log(res)
-        if(res.success){ 
+        if(res.status === 'success'){ 
           setTimeout( () => {
-            const setToken = setStore('userToken', res.success).then( (res) => {
-              console.log(res)
+            let token = res.token;
+            const setToken = setStore('userToken', res.token).then( (res) => {
               if(res === true){
                 window.location.href = '/';
                 setIsLoading(false);
@@ -80,6 +81,9 @@ const Login = () => {
           setIsLoading(false);
            newErrors.server = res.error;
            setErrors(newErrors);
+        }else{
+          newErrors.server = res;
+          setIsLoading(false);
         }
       }).catch(error => {
           setIsLoading(false);

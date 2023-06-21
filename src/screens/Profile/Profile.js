@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import TopHeader from '../../components/TopHeader';
 
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import BottomTabs from '../../components/BottomTabs';
 
 import { IoCloseSharp, IoCheckmarkSharp, IoArrowDownSharp } from "react-icons/io5";
@@ -14,8 +14,53 @@ import profile4 from '../../assets/PNG/profile4.png';
 import profile5 from '../../assets/PNG/profile5.png';
 import profile6 from '../../assets/PNG/profile6.png';
 
+import { getData, postData } from '../../services/authService';
+import { setStore, getStore, getUserToken } from '../../services/storageService';
+import LoaderService from '../../services/loader';
+
+
 
 const Profile = () => {
+  const [token, setToken] = useState(localStorage.getItem('userToken') || null);
+
+  const [userData, setUserData] = useState([]);
+  const [basicsData, setBasicsData] = useState([]);
+  const [interestsData, setInterestsData] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const { userId } = useParams();
+
+  useEffect(() => {
+      getUserProfile_Data();
+  }, []);
+
+ 
+
+  const getUserProfile_Data = () => {
+    setIsLoading(true);
+    postData('/user-profile', { id: userId }, token).then((res) => {
+       console.log(res)
+       if(res.status === 'success'){ 
+        setIsLoading(false);
+        setUserData(res.data);
+
+        setBasicsData(res.data.height,res.data.nationality, res.data.education, 
+          res.data.ethnicity, res.data.why_here, res.data.eye_colour, res.data.body_type, 
+          res.data.do_smoke, res.data.do_drink, res.data.personality_type, res.data.like_night_out,
+          res.data.like_night_in, res.data.like_have_children);
+        
+        setInterestsData(res.data)
+        console.log(basicsData);
+        console.log(interestsData);
+       }else if(res.error){
+        setIsLoading(false);
+       }
+      })
+      .catch(error => {
+        setIsLoading(false);
+      });
+  };
+
 
 
   const my_basics = [
@@ -53,13 +98,13 @@ const Profile = () => {
 
     <main className="content-main">
         <div style={{padding: '2%'}}>
-          <div className="item1" style={{height: '82vh', borderRadius: 20, position: 'relative', backgroundImage: `url(${profile1})`}}>
+          <div className="item1" style={{height: '82vh', borderRadius: 20, position: 'relative', backgroundImage: `url(${userData.image})`}}>
           <div className="linear-background" style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 180}}>
               <div style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 95}}>
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0px 25px'}}>
                   <div>              
-                    <h1 style={{margin: '5px 0px', color: '#fff', fontWeight: 600}}>Lisa, 24</h1>
-                    <h5 style={{margin: '5px 0px', color: '#fff', fontWeight: 300}}>Bournemouth, Female</h5>
+                    <h1 style={{margin: '5px 0px', color: '#fff', fontWeight: 600}}>{userData.name} {userData.age}</h1>
+                    <h5 style={{margin: '5px 0px', color: '#fff', fontWeight: 300}}>{userData.location} {userData.gender}</h5>
                   </div>
                   <div>
                     <Link to="/chatBetween">
@@ -73,17 +118,34 @@ const Profile = () => {
           </div>
           </div>
 
-          <div style={{backgroundColor: '#b7ecfe', borderRadius: 20, padding: 20, margin: '12px 0px'}}>
-            <h4 style={{color: '#69a4c0', fontWeight: 600}}>“ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris malesuada fringilla sem, non viverra velit accumsan non. Etiam faucibus, leo in tempus faucibus, sem lacus ullamcorper turpis, sed semper ante velit quis nunc. ”</h4>
-          </div>
+         {userData.about == null && (
+           <>
+            <br /> <br />
+           </>
+         )}
 
-          
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}> 
-            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${profile2})`}}>
-            </div>
-            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${profile3})`}}>
-            </div>
+          {userData.about && (
+          <div style={{backgroundColor: '#b7ecfe', borderRadius: 20, padding: 20, margin: '12px 0px'}}>
+            <h4 style={{color: '#69a4c0', fontWeight: 600}}>“{userData.about}”</h4>
           </div>
+          )}
+
+
+          {(userData.image1 || userData.image2) && (
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}> 
+            {userData.image1 && (
+            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${userData.image1})`}}></div>
+            )}
+             {userData.image2 && (
+            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${userData.image2})`}}></div>
+            )}
+          </div>
+          )}
+
+
+
+
+
 
           <div style={{margin: '25px 0px'}}>
             <h4 style={{textAlign: 'center', margin: '35px 0px 20px'}}>My Basics</h4>
@@ -95,14 +157,18 @@ const Profile = () => {
 
             <div style={{display: 'flex', alignItems: 'center'}}></div>
           </div>
+    
 
-
+          {(userData.image3 || userData.image4) && (
           <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}> 
-            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${profile4})`}}>
-            </div>
-            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${profile5})`}}>
-            </div>
+            {userData.image3 && (
+            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${userData.image3})`}}></div>
+            )}
+             {userData.image4 && (
+            <div className="item1" style={{height: '300px', width: '48%', borderRadius: 20, backgroundImage: `url(${userData.image4})`}}></div>
+            )}
           </div>
+          )}
 
 
           <div style={{margin: '25px 0px'}}>
@@ -122,8 +188,8 @@ const Profile = () => {
               <div style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 95}}>
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0px 25px'}}>
                   <div>              
-                    <h1 style={{margin: '5px 0px', color: '#fff', fontWeight: 600}}>Lisa, 24</h1>
-                    <h5 style={{margin: '5px 0px', color: '#fff', fontWeight: 300}}>Bournemouth, Female</h5>
+                    <h1 style={{margin: '5px 0px', color: '#fff', fontWeight: 600}}>{userData.name} {userData.age}</h1>
+                    <h5 style={{margin: '5px 0px', color: '#fff', fontWeight: 300}}>{userData.location} {userData.gender}</h5>
                   </div>
                   <div>
                     <Link to="/chatBetween">
@@ -144,7 +210,7 @@ const Profile = () => {
     </main>
 
     <BottomTabs></BottomTabs>
-
+    {isLoading && <LoaderService />}
     </div>
   );
 };

@@ -14,30 +14,28 @@ import profile5 from '../../assets/PNG/profile5.png';
 
 import { getData } from '../../services/authService';
 import { setStore, getStore, getUserToken } from '../../services/storageService';
+import LoaderService from '../../services/loader';
 
 
 
 const BlockedUsers = () => {
-
+  const [token, setToken] = useState(localStorage.getItem('userToken') || null);
 
   const [blockedUsersList, setBlockedUsersList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
-    const userToken = getUserToken().then( (res) => {
-      console.log(res.token);
-      handleBlockedUsersList_Data(res.token);
-    })
+      handleBlockedUsersList_Data();
   }, []);
 
 
 
-  const handleBlockedUsersList_Data = (token) => {
+  const handleBlockedUsersList_Data = () => {
     setIsLoading(true);
-    getData('/user-list', token).then((res) => {
+    getData('/blocked-user', token).then((res) => {
        console.log(res)
-       if(res.success){ 
+       if(res.status === 'success'){ 
         setIsLoading(false);
         setBlockedUsersList(res.data);
        }else if(res.error){
@@ -141,6 +139,8 @@ const BlockedUsers = () => {
 
 
     <BottomTabs></BottomTabs>
+    {isLoading && <LoaderService />}
+
     </div>
   );
 };

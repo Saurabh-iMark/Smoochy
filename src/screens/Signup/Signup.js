@@ -233,7 +233,7 @@ const Signup = () => {
     getData('/plan', '').then((res) => {
       console.log(res);
 
-      // if(res.success){
+      // if(res.status === 'success'){
       //   localStorage.setItem('userToken', res.success.token);
       //   window.location.href = '/bottomTab2';
       // }else if(res.error){

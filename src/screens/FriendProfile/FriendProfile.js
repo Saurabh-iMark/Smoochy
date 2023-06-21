@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import TopHeader from '../../components/TopHeader';
 
 import { Link } from 'react-router-dom';
@@ -10,12 +10,23 @@ import { BsFillChatRightDotsFill } from "react-icons/bs";
 import profile7 from '../../assets/PNG/profile7.png';
 
 
+import { getData } from '../../services/authService';
+import { setStore, getStore, getUserToken } from '../../services/storageService';
+import LoaderService from '../../services/loader';
+
+
+
 const FriendProfile = () => {
+  const [token, setToken] = useState(localStorage.getItem('userToken') || null);
+
+  const [userData, setUserData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
 
-  // const styles = {
-  //   background: linear-gradient(180deg, #FFFFFF00, #000000);
-  // };
+  useEffect(() => {
+ 
+  }, []);
+
 
 
 
@@ -69,6 +80,7 @@ const FriendProfile = () => {
     </main>
 
     <BottomTabs></BottomTabs>
+    {isLoading && <LoaderService />}
     </div>
   );
 };

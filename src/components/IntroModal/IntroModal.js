@@ -1,18 +1,39 @@
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import { IoCloseSharp } from 'react-icons/io5';
 
-
+import { setStore, getStore, getUserToken } from '../../services/storageService';
 import './IntroModal.css';
 
 
 
 const IntroModal = ({ }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const introModalStatus = getStore('introModal').then( (res) => {
+      // console.log(res);
+      if(res === null){
+        setTimeout( () => {
+          setIsOpen(true);
+        }, 5000);
+      }else{
+        setIsOpen(false);
+      };
+    })
+
+    // console.log(introModalStatus);
+  }, []);
+
 
   const closeModal = () => {
-    setIsOpen(false);
+    const setStatus = setStore('introModal', true).then( (res) => {
+      // console.log(res);
+      if(res === true){
+        setIsOpen(false);
+      };
+    });
   };
 
   return (

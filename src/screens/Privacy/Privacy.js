@@ -12,14 +12,12 @@ import LoaderService from '../../services/loader';
 
 
 const Privacy = () => {
+
   const [privacyContent, setPrivacyContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const userToken = getUserToken().then( (res) => {
-      console.log(res.token);
       handlePrivacy_Data();
-    })
   }, []);
 
 
