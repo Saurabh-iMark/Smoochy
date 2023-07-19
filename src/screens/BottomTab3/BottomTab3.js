@@ -84,11 +84,11 @@ const BottomTab3 = () => {
   const handle_Accept = (userId) => {
       console.log(userId);
       setIsLoading(true);
-      postData('/accept-user', { id: userId }, '').then((res) => {
+      postData('/accept-user', { id: userId }, token).then((res) => {
        console.log(res)
        if(res.status === 'success'){ 
         setIsLoading(false);
-       
+        handleUserList_Waiting_Data();
        }else if(res.error){
         setIsLoading(false);
        }
@@ -104,11 +104,11 @@ const BottomTab3 = () => {
   const handle_Reject = (userId) => {
       console.log(userId);
       setIsLoading(true);
-      postData('/reject-user', { id: userId }, '').then((res) => {
+      postData('/reject-user', { id: userId }, token).then((res) => {
        console.log(res)
        if(res.status === 'success'){ 
         setIsLoading(false);
-       
+        handleUserList_Waiting_Data();
        }else if(res.error){
         setIsLoading(false);
        }
@@ -159,7 +159,6 @@ const BottomTab3 = () => {
           <Tab>Waiting</Tab>
         </TabList>
     
-{/* {token} */}
 
         <br />
         <div style={{display: 'flex', align: 'center', justifyContent: 'center', margin: '20px 0px 20px'}}>
@@ -183,7 +182,7 @@ const BottomTab3 = () => {
               </Link>
               <div style={{width: 215}}>
                 <h4>{user.name}</h4>
-                <p>{user.msg}</p>
+                <p>{user.message}</p>
               </div>
               <div>
                 <Link to="/chatBetween">

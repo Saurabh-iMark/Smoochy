@@ -30,11 +30,13 @@ const Settings = () => {
       const removeToken = removeStore('userToken').then( (res) => {
         console.log(res)
         if(res === true){
+          const removeIntro = removeStore('introModal').then( (res) => {
+          }); 
           window.location.href = '/';
           setIsLoading(false);
         }
-      });   
-    }, 2500)
+      });    
+    }, 2000)
   };
 
 

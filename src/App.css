@@ -1,5 +1,3 @@
-
-
 @font-face {
   font-family: 'Inter';
   font-weight: 300;
@@ -134,7 +132,7 @@ p{
   text-align: center;
   margin: 8px 0px;
   background-color: #ffffff;
-  font-weight: 600;
+  font-weight: 500;
 }
 .centered-input::placeholder {
   color: #cacaca;
@@ -220,7 +218,7 @@ p{
   border: none;
   color: #cacaca;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 0 25px;
   text-align: left;
   appearance: none;
@@ -295,7 +293,7 @@ p{
   font-size: 15px;
   border: none;
   text-align: center;
-  font-weight: 600;
+  font-weight: 500;
 }
 .borderless-input::placeholder {
   color: #cacaca;
@@ -734,7 +732,8 @@ ul.react-tabs__tab-list .react-tabs__tab.react-tabs__tab--selected {
 .custom-checkbox input[type="checkbox"] {
   appearance: none;
   position: relative;
-  z-index: 9;
+  /* z-index: 9; */
+  z-index: 0;
   width: 16px;
   height: 16px;
   border-radius: 50%;

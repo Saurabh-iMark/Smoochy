@@ -6,7 +6,8 @@ import BackButton from '../../components/BackButton';
 
 import LoaderService from '../../services/loader';
 
-import { postData } from '../../services/authService';
+import { postData, forget } from '../../services/authService';
+import { showToast } from '../../services/toastService';
 
 
 
@@ -55,14 +56,18 @@ const Forgot = () => {
     if (validateForm()) {
       setIsLoading(true);
 
-      postData('/forgot-passwrod', email, '').then((res) => {
-        console.log(res)
+      forget(email).then((res) => {
+        console.log(res);
+        if(res.status === 'success'){
+          showToast(res.msg, 'success');
+        }
         setIsLoading(false);
         setErrors(newErrors);
       }).catch(error => {
-          setIsLoading(false);
+           setIsLoading(false);
            newErrors.server = error;
            setErrors(newErrors);
+           showToast(error, 'error');
       });
     }
   };

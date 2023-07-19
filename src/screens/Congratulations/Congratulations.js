@@ -10,6 +10,13 @@ import image3 from '../../assets/PNG/image3.png';
 
 
 const Congratulations = () => {
+
+
+  const handleReload = () => {
+    window.location.href = '/';
+  }
+
+
   return (
     <div className="main-container">
       <div className="main-content" style={{height: '70vh'}}>
@@ -46,9 +53,10 @@ const Congratulations = () => {
             </Link>
           </div>
           <div>
-            <Link to="/bottomTab2">
-              <button className="a-button">Skip</button>
-            </Link>
+          <button className="a-button" onClick={handleReload}>Skip</button>
+            {/* <Link to="/">
+              <button className="a-button" onClick={handleReload()}>Skip</button>
+            </Link> */}
           </div>
         </div>
 

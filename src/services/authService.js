@@ -1,13 +1,10 @@
 import axios from 'axios';
 
-
   const API_URL = 'https://smoochy.customerdevsites.com/api'; // Replace with your API URL
 
   // const authService = axios.create({
   //   baseURL: API_URL,
   // });
-
-
 
   // const login = (email, password) => {
   //     return axios
@@ -38,15 +35,29 @@ import axios from 'axios';
     
   const register = async (payload)  => {
       let nativeHeaders = {
-           'Content-Type': 'multipart/form-data', 
+           'Content-Type': 'application/json', 
            'Access-Control-Allow-Origin': '*',
            'mode': 'no-cors'
       };
-
+      console.log(payload);
       const res = await fetch(API_URL + "/register", {method: 'POST', headers: nativeHeaders, body: JSON.stringify(payload)});
       const finalRes = await res.json();
       return finalRes;
   }
+
+
+  const forget = async (email)  => {
+    let nativeHeaders = {
+         'Content-Type': 'application/json', 
+         'Access-Control-Allow-Origin': '*',
+         'mode': 'no-cors'
+    };
+    console.log(email);
+    const res = await fetch(API_URL + "/forget-Password", {method: 'POST', headers: nativeHeaders, body: JSON.stringify({email})});
+    const finalRes = await res.json();
+    return finalRes;
+}
+
     
 
   const contact = async (name, email, subject, message) => {
@@ -55,11 +66,10 @@ import axios from 'axios';
          'Access-Control-Allow-Origin': '*',
          'mode': 'no-cors'
     };
-    
     const res = await fetch(API_URL + "/contact", {method: 'POST', headers: nativeHeaders, body: JSON.stringify({ name, email, subject, message })});
     const finalRes = await res.json();
     return finalRes;
-}
+  }
 
 
 
@@ -78,7 +88,10 @@ import axios from 'axios';
         };
     }
 
+    // console.log(payload);
+    
     const res = await fetch(API_URL + route, {method: 'POST', headers: nativeHeaders, body: JSON.stringify(payload)});
+    // console.log(res);
     const finalRes = await res.json();
     return finalRes;
   }
@@ -89,28 +102,23 @@ import axios from 'axios';
     let nativeHeaders;
     if(token === '') {
         nativeHeaders = {
-           'Content-Type': 'multipart/form-data', 
+           'Content-Type': 'application/json', 
            'Access-Control-Allow-Origin': '*', 
         };
     }else {
         nativeHeaders = {
-           'Content-Type': 'multipart/form-data', 
+           'Content-Type': 'application/json', 
            'Access-Control-Allow-Origin': '*',
            'Authorization': `Bearer ${token}`
         };
     }
-
-    console.log(JSON.stringify(payload));
-    console.log(API_URL + route);
-    console.log(nativeHeaders);
-    console.log(payload);
-
-    const res = await fetch(API_URL + route, {method: 'POST', headers: nativeHeaders, body: JSON.stringify(payload)});
+    const res = await fetch(API_URL + route, {method: 'POST', headers: nativeHeaders, mode: 'CORS', body: JSON.stringify(payload)});
     console.log(res);
     const finalRes = await res.json();
-    console.log(finalRes);
     return finalRes;
   }
+
+
 
 
   const getData = async (route, token: String) => {
@@ -127,7 +135,6 @@ import axios from 'axios';
            'Authorization': `Bearer ${token}`
         };
     }
-
     const res = await fetch(API_URL + route, {method: 'GET', headers: nativeHeaders});
     // console.log(res);
     const finalRes = await res.json();
@@ -137,4 +144,4 @@ import axios from 'axios';
 
 
 
-export {login, register, contact, postData, postFormData, getData}
+export {login, register, forget, contact, postData, postFormData, getData}

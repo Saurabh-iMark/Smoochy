@@ -9,6 +9,7 @@ import { setStore, getStore, getUserToken } from '../../services/storageService'
 import LoaderService from '../../services/loader';
 
 import { login } from '../../services/authService';
+import { showToast } from '../../services/toastService';
 
 
  
@@ -58,7 +59,7 @@ const Login = () => {
     return formIsValid;
   };
 
-
+  
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const newErrors = {};
@@ -68,6 +69,7 @@ const Login = () => {
       login(email, password).then((res) => {
         console.log(res)
         if(res.status === 'success'){ 
+          showToast('Login Success.', 'success');
           setTimeout( () => {
             let token = res.token;
             const setToken = setStore('userToken', res.token).then( (res) => {
@@ -82,10 +84,12 @@ const Login = () => {
            newErrors.server = res.error;
            setErrors(newErrors);
         }else{
+          showToast('Login unsuccessfull!', 'warning');
           newErrors.server = res;
           setIsLoading(false);
         }
       }).catch(error => {
+          showToast('Login unsuccessfull!', 'error');
           setIsLoading(false);
            newErrors.server = error;
            setErrors(newErrors);

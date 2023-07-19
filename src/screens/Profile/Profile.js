@@ -103,7 +103,12 @@ const Profile = () => {
               <div style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 95}}>
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0px 25px'}}>
                   <div>              
-                    <h1 style={{margin: '5px 0px', color: '#fff', fontWeight: 600}}>{userData.name} {userData.age}</h1>
+                    <h3 style={{margin: '5px 0px', color: '#fff', fontWeight: 600}}>{userData.name}&nbsp;
+                    {userData.age !== '0' &&
+                      userData.age
+                    }   
+                    
+                    </h3>
                     <h5 style={{margin: '5px 0px', color: '#fff', fontWeight: 300}}>{userData.location} {userData.gender}</h5>
                   </div>
                   <div>
